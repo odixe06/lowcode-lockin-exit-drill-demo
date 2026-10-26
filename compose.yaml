@@ -1,0 +1,17 @@
+services:
+  runtime_a:
+    image: nodered/node-red:4.1.0
+    ports: ["127.0.0.1:1881:1880"]
+    volumes:
+      - ./nodered/settings.js:/data/settings.js:ro
+      - ./nodered/flows.json:/flows.json:ro
+      - ./policy.json:/policy.json:ro
+  runtime_b:
+    image: nodered/node-red:4.1.0
+    ports: ["127.0.0.1:1882:1880"]
+    volumes:
+      - runtime_b_data:/data
+      - ./nodered/settings-b.js:/data/settings.js:ro
+      - ./policy.json:/policy.json:ro
+volumes:
+  runtime_b_data:

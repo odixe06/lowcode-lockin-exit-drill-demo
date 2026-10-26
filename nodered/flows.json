@@ -1,0 +1,57 @@
+[
+  {
+    "id": "tab-exit",
+    "type": "tab",
+    "label": "Portable approval demo",
+    "disabled": false,
+    "info": "Policy is in /policy.json. JSON flow remains Node-RED specific."
+  },
+  {
+    "id": "decision-in",
+    "type": "http in",
+    "z": "tab-exit",
+    "name": "Request",
+    "url": "/evaluate",
+    "method": "post",
+    "upload": false,
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "decision-fn"
+      ]
+    ]
+  },
+  {
+    "id": "decision-fn",
+    "type": "function",
+    "z": "tab-exit",
+    "name": "Evaluate shared policy",
+    "func": "const amount = msg.payload && msg.payload.amount;\nconst policy = global.get('policy');\nif (typeof amount !== 'number' || !Number.isSafeInteger(amount) || amount < 0) {\n    msg.statusCode = 400;\n    msg.payload = {error: 'amount must be a non-negative safe integer'};\n} else {\n    msg.statusCode = 200;\n    msg.payload = {decision: amount <= policy.auto_approve_limit ? 'approved' : policy.otherwise, policy_version: policy.version, currency: policy.currency};\n}\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 160,
+    "wires": [
+      [
+        "decision-out"
+      ]
+    ]
+  },
+  {
+    "id": "decision-out",
+    "type": "http response",
+    "z": "tab-exit",
+    "name": "Decision",
+    "statusCode": "",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "x": 700,
+    "y": 160,
+    "wires": []
+  }
+]

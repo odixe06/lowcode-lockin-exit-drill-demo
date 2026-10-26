@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "currency": "VND",
+  "auto_approve_limit": 1000000,
+  "otherwise": "manual_review"
+}
